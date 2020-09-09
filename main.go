@@ -152,7 +152,7 @@ func completedDiscsHandler(w http.ResponseWriter, r *http.Request) {
 
 // Database Utilities
 func addNewDisc(db *sql.DB, description string) bool  {
-	discSql := "INSERT INTO todo.disc(discId, description, timestamp, iscompleted) VALUES(default, $1, $2, false);"
+	discSql := "INSERT INTO disc_catalog.disc(discId, description, timestamp, iscompleted) VALUES(default, $1, $2, false);"
 
 	var now = time.Now()
 	var discDate = fmt.Sprintf("%v %v %v", now.Month().String(), now.Day(), now.Year())
@@ -166,7 +166,7 @@ func addNewDisc(db *sql.DB, description string) bool  {
 }
 
 func completeDisc(db *sql.DB, discId int) bool {
-	results, err := db.Query("UPDATE todo.disc SET iscompleted=true WHERE discId=$1", discId)
+	results, err := db.Query("UPDATE disc_catalog.disc SET iscompleted=true WHERE discId=$1", discId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -176,7 +176,7 @@ func completeDisc(db *sql.DB, discId int) bool {
 }
 
 func updateDisc(db *sql.DB, disc Disc) bool {
-	results, err := db.Query("UPDATE todo.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
+	results, err := db.Query("UPDATE disc_catalog.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
 		disc.Description, disc.Timestamp, disc.IsCompleted, disc.DiscId)
 	if err != nil {
 		panic(err.Error())
@@ -187,7 +187,7 @@ func updateDisc(db *sql.DB, disc Disc) bool {
 }
 
 func deleteCompletedDisc(db *sql.DB, discId string) bool {
-	results, err := db.Query("DELETE FROM todo.disc WHERE discId=$1", discId)
+	results, err := db.Query("DELETE FROM disc_catalog.disc WHERE discId=$1", discId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -212,11 +212,11 @@ func getFilteredDiscs(db *sql.DB, includeActive bool, includeCompleted bool) Dis
 	var query string
 
 	if includeActive && includeCompleted {
-		query = "SELECT * FROM todo.disc"
+		query = "SELECT * FROM disc_catalog.disc"
 	} else if includeActive {
-		query = "SELECT * FROM todo.disc WHERE iscompleted = false"
+		query = "SELECT * FROM disc_catalog.disc WHERE iscompleted = false"
 	} else if includeCompleted {
-		query = "SELECT * FROM todo.disc WHERE iscompleted = true"
+		query = "SELECT * FROM disc_catalog.disc WHERE iscompleted = true"
 	} else {
 		panic("includeActive & includeActive cannot both be false")
 	}
@@ -230,18 +230,31 @@ func getFilteredDiscs(db *sql.DB, includeActive bool, includeCompleted bool) Dis
 
 	for results.Next() {
 		var disc Disc
-
-		err = results.Scan(&disc.DiscId,&disc.Description,&disc.Timestamp,&disc.IsCompleted)
+		err = results.Scan(
+			&disc.DiscId,
+			&disc.Brand,
+			&disc.Name,
+			&disc.Plastic,
+			&disc.Stability,
+			&disc.Speed,
+			&disc.Glide,
+			&disc.Turn,
+			&disc.IsInBag,
+			&disc.IsCollected,
+			&disc.Description,
+			&disc.Notes,
+			&disc.Link,
+			)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		// append on active discs for active disc searches OR append on completed disc for completed disc searches.
-		if (includeActive && !disc.IsCompleted) || (includeCompleted && disc.IsCompleted) {
-			discs = append(discs, disc)
-		}
-
-		fmt.Println("(" + disc.Timestamp + ") : " + disc.Description)
+		//// append on active discs for active disc searches OR append on completed disc for completed disc searches.
+		//if (includeActive && !disc.IsCompleted) || (includeCompleted && disc.IsCompleted) {
+		//	discs = append(discs, disc)
+		//}
+		//
+		//fmt.Println("(" + disc.Timestamp + ") : " + disc.Description)
 	}
 	fmt.Printf("Number of discs returned: %v\n", len(discs))
 	defer db.Close()
