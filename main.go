@@ -51,112 +51,112 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("200 OK")
 }
 
-// GET /tasks
-func getTasksHandler(w http.ResponseWriter, r *http.Request) {
+// GET /discs
+func getDiscsHandler(w http.ResponseWriter, r *http.Request) {
 
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /tasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /discs")
 
-	tasks := getAllTasks(getDatabaseConnection())
+	discs := getAllDiscs(getDatabaseConnection())
 
-	json.NewEncoder(w).Encode(tasks)
+	json.NewEncoder(w).Encode(discs)
 }
 
-// POST /tasks
-func postActiveTask(w http.ResponseWriter, r *http.Request) {
+// POST /discs
+func postActiveDisc(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: POST /tasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: POST /discs")
 
 
-	//tasks := addNewTask(getDatabaseConnection())
+	//discs := addNewDisc(getDatabaseConnection())
 	decoder := json.NewDecoder(r.Body)
-	var task Task
-	err := decoder.Decode(&task)
+	var disc Disc
+	err := decoder.Decode(&disc)
 	if err != nil {
 		panic(err.Error())
 	}
-	if addNewTask(getDatabaseConnection(), task.Description) {
-		json.NewEncoder(w).Encode("Task with description " + task.Description + " was successfully added.")
+	if addNewDisc(getDatabaseConnection(), disc.Description) {
+		json.NewEncoder(w).Encode("Disc with description " + disc.Description + " was successfully added.")
 	}
 }
 
-// PUT /tasks
-func updateActiveTask(w http.ResponseWriter, r *http.Request) {
+// PUT /discs
+func updateActiveDisc(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: PUT /tasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: PUT /discs")
 
 	decoder := json.NewDecoder(r.Body)
-	var task Task
-	err := decoder.Decode(&task)
+	var disc Disc
+	err := decoder.Decode(&disc)
 	if err != nil {
 		panic(err.Error())
 	}
-	if updateTask(getDatabaseConnection(), task) {
-		json.NewEncoder(w).Encode("Task with ID " + string(task.TaskId) + " was successfully completed.")
+	if updateDisc(getDatabaseConnection(), disc) {
+		json.NewEncoder(w).Encode("Disc with ID " + string(disc.DiscId) + " was successfully completed.")
 	}
 }
 
-// DELETE /tasks
-func deleteTask(w http.ResponseWriter, r *http.Request) {
+// DELETE /discs
+func deleteDisc(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: DELETE /tasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: DELETE /discs")
 
-	taskId, ok := r.URL.Query()["taskId"]
-	if !ok || len(taskId[0]) < 1 {
-		panic("Url request parameter 'taskId' is required for task deletion.")
+	discId, ok := r.URL.Query()["discId"]
+	if !ok || len(discId[0]) < 1 {
+		panic("Url request parameter 'discId' is required for disc deletion.")
 	}
-	if deleteCompletedTask(getDatabaseConnection(), taskId[0]) {
-		json.NewEncoder(w).Encode("Task with ID " + taskId[0] + " was successfully deleted.")
+	if deleteCompletedDisc(getDatabaseConnection(), discId[0]) {
+		json.NewEncoder(w).Encode("Disc with ID " + discId[0] + " was successfully deleted.")
 	}
 }
 
 
-// GET /activeTasks
-func activeTasksHandler(w http.ResponseWriter, r *http.Request) {
+// GET /activeDiscs
+func activeDiscsHandler(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /activeTasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /activeDiscs")
 
-	var tasks = getAllActiveTasks(getDatabaseConnection())
+	var discs = getAllActiveDiscs(getDatabaseConnection())
 
-	json.NewEncoder(w).Encode(tasks)
+	json.NewEncoder(w).Encode(discs)
 }
 
-// GET /completedTasks
-func completedTasksHandler(w http.ResponseWriter, r *http.Request) {
+// GET /completedDiscs
+func completedDiscsHandler(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /completedTasks")
+	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /completedDiscs")
 
-	tasks := getAllCompletedTasks(getDatabaseConnection())
+	discs := getAllCompletedDiscs(getDatabaseConnection())
 
-	json.NewEncoder(w).Encode(tasks)
+	json.NewEncoder(w).Encode(discs)
 }
 
 
 // Database Utilities
-func addNewTask(db *sql.DB, description string) bool  {
-	taskSql := "INSERT INTO todo.task(taskId, description, timestamp, iscompleted) VALUES(default, $1, $2, false);"
+func addNewDisc(db *sql.DB, description string) bool  {
+	discSql := "INSERT INTO todo.disc(discId, description, timestamp, iscompleted) VALUES(default, $1, $2, false);"
 
 	var now = time.Now()
-	var taskDate = fmt.Sprintf("%v %v %v", now.Month().String(), now.Day(), now.Year())
-	results, err := db.Query(taskSql, description, taskDate)
+	var discDate = fmt.Sprintf("%v %v %v", now.Month().String(), now.Day(), now.Year())
+	results, err := db.Query(discSql, description, discDate)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -165,8 +165,8 @@ func addNewTask(db *sql.DB, description string) bool  {
 	return true
 }
 
-func completeTask(db *sql.DB, taskId int) bool {
-	results, err := db.Query("UPDATE todo.task SET iscompleted=true WHERE taskId=$1", taskId)
+func completeDisc(db *sql.DB, discId int) bool {
+	results, err := db.Query("UPDATE todo.disc SET iscompleted=true WHERE discId=$1", discId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -175,9 +175,9 @@ func completeTask(db *sql.DB, taskId int) bool {
 	return true
 }
 
-func updateTask(db *sql.DB, task Task) bool {
-	results, err := db.Query("UPDATE todo.task SET description=$1, timestamp=$2, iscompleted=$3 WHERE taskId=$4",
-		task.Description, task.Timestamp, task.IsCompleted, task.TaskId)
+func updateDisc(db *sql.DB, disc Disc) bool {
+	results, err := db.Query("UPDATE todo.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
+		disc.Description, disc.Timestamp, disc.IsCompleted, disc.DiscId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -186,8 +186,8 @@ func updateTask(db *sql.DB, task Task) bool {
 	return true
 }
 
-func deleteCompletedTask(db *sql.DB, taskId string) bool {
-	results, err := db.Query("DELETE FROM todo.task WHERE taskId=$1", taskId)
+func deleteCompletedDisc(db *sql.DB, discId string) bool {
+	results, err := db.Query("DELETE FROM todo.disc WHERE discId=$1", discId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -196,27 +196,27 @@ func deleteCompletedTask(db *sql.DB, taskId string) bool {
 	return true
 }
 
-func getAllTasks(db *sql.DB) Tasks {
-	return getFilteredTasks(db, true, true)
+func getAllDiscs(db *sql.DB) Discs {
+	return getFilteredDiscs(db, true, true)
 }
 
-func getAllActiveTasks(db *sql.DB) Tasks {
-	return getFilteredTasks(db, true, false)
+func getAllActiveDiscs(db *sql.DB) Discs {
+	return getFilteredDiscs(db, true, false)
 }
 
-func getAllCompletedTasks(db *sql.DB) Tasks {
-	return getFilteredTasks(db, false, true)
+func getAllCompletedDiscs(db *sql.DB) Discs {
+	return getFilteredDiscs(db, false, true)
 }
 
-func getFilteredTasks(db *sql.DB, includeActive bool, includeCompleted bool) Tasks {
+func getFilteredDiscs(db *sql.DB, includeActive bool, includeCompleted bool) Discs {
 	var query string
 
 	if includeActive && includeCompleted {
-		query = "SELECT * FROM todo.task"
+		query = "SELECT * FROM todo.disc"
 	} else if includeActive {
-		query = "SELECT * FROM todo.task WHERE iscompleted = false"
+		query = "SELECT * FROM todo.disc WHERE iscompleted = false"
 	} else if includeCompleted {
-		query = "SELECT * FROM todo.task WHERE iscompleted = true"
+		query = "SELECT * FROM todo.disc WHERE iscompleted = true"
 	} else {
 		panic("includeActive & includeActive cannot both be false")
 	}
@@ -226,26 +226,26 @@ func getFilteredTasks(db *sql.DB, includeActive bool, includeCompleted bool) Tas
 		panic(err.Error())
 	}
 
-	tasks := Tasks{}
+	discs := Discs{}
 
 	for results.Next() {
-		var task Task
+		var disc Disc
 
-		err = results.Scan(&task.TaskId,&task.Description,&task.Timestamp,&task.IsCompleted)
+		err = results.Scan(&disc.DiscId,&disc.Description,&disc.Timestamp,&disc.IsCompleted)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		// append on active tasks for active task searches OR append on completed task for completed task searches.
-		if (includeActive && !task.IsCompleted) || (includeCompleted && task.IsCompleted) {
-			tasks = append(tasks, task)
+		// append on active discs for active disc searches OR append on completed disc for completed disc searches.
+		if (includeActive && !disc.IsCompleted) || (includeCompleted && disc.IsCompleted) {
+			discs = append(discs, disc)
 		}
 
-		fmt.Println("(" + task.Timestamp + ") : " + task.Description)
+		fmt.Println("(" + disc.Timestamp + ") : " + disc.Description)
 	}
-	fmt.Printf("Number of tasks returned: %v\n", len(tasks))
+	fmt.Printf("Number of discs returned: %v\n", len(discs))
 	defer db.Close()
-	return tasks
+	return discs
 }
 
 func getDatabaseConnection() *sql.DB {
@@ -269,12 +269,12 @@ func handleRequests() {
 	Router := mux.NewRouter().StrictSlash(true)
 	Router.HandleFunc("/", indexHandler)
 	Router.HandleFunc("/status", statusHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/tasks", getTasksHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/tasks", postActiveTask).Methods("POST", "OPTIONS")
-	Router.HandleFunc("/tasks", updateActiveTask).Methods("PUT", "OPTIONS")
-	Router.HandleFunc("/tasks", deleteTask).Methods("DELETE", "OPTIONS")
-	Router.HandleFunc("/activeTasks", activeTasksHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/completedTasks", completedTasksHandler).Methods("GET")
+	Router.HandleFunc("/discs", getDiscsHandler).Methods("GET", "OPTIONS")
+	Router.HandleFunc("/discs", postActiveDisc).Methods("POST", "OPTIONS")
+	Router.HandleFunc("/discs", updateActiveDisc).Methods("PUT", "OPTIONS")
+	Router.HandleFunc("/discs", deleteDisc).Methods("DELETE", "OPTIONS")
+	Router.HandleFunc("/activeDiscs", activeDiscsHandler).Methods("GET", "OPTIONS")
+	Router.HandleFunc("/completedDiscs", completedDiscsHandler).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {
