@@ -52,7 +52,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /discs
-func getDiscsHandler(w http.ResponseWriter, r *http.Request) {
+func getAllDiscsHandler(w http.ResponseWriter, r *http.Request) {
 
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
@@ -66,93 +66,81 @@ func getDiscsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // POST /discs
-func postActiveDisc(w http.ResponseWriter, r *http.Request) {
-	setupResponse(&w, r)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: POST /discs")
-
-
-	//discs := addNewDisc(getDatabaseConnection())
-	decoder := json.NewDecoder(r.Body)
-	var disc Disc
-	err := decoder.Decode(&disc)
-	if err != nil {
-		panic(err.Error())
-	}
-	if addNewDisc(getDatabaseConnection(), disc.Description) {
-		json.NewEncoder(w).Encode("Disc with description " + disc.Description + " was successfully added.")
-	}
-}
-
+//func postActiveDisc(w http.ResponseWriter, r *http.Request) {
+//	setupResponse(&w, r)
+//	if (*r).Method == "OPTIONS" {
+//		return
+//	}
+//	fmt.Println("("+time.Now().String()+") Endpoint Hit: POST /discs")
+//
+//
+//	//discs := addNewDisc(getDatabaseConnection())
+//	decoder := json.NewDecoder(r.Body)
+//	var disc Disc
+//	err := decoder.Decode(&disc)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	if addNewDisc(getDatabaseConnection(), disc.Description) {
+//		json.NewEncoder(w).Encode("Disc with description " + disc.Description + " was successfully added.")
+//	}
+//}
+//
 // PUT /discs
-func updateActiveDisc(w http.ResponseWriter, r *http.Request) {
-	setupResponse(&w, r)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: PUT /discs")
-
-	decoder := json.NewDecoder(r.Body)
-	var disc Disc
-	err := decoder.Decode(&disc)
-	if err != nil {
-		panic(err.Error())
-	}
-	if updateDisc(getDatabaseConnection(), disc) {
-		json.NewEncoder(w).Encode("Disc with ID " + string(disc.DiscId) + " was successfully completed.")
-	}
-}
-
+//func updateActiveDisc(w http.ResponseWriter, r *http.Request) {
+//	setupResponse(&w, r)
+//	if (*r).Method == "OPTIONS" {
+//		return
+//	}
+//	fmt.Println("("+time.Now().String()+") Endpoint Hit: PUT /discs")
+//
+//	decoder := json.NewDecoder(r.Body)
+//	var disc Disc
+//	err := decoder.Decode(&disc)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	if updateDisc(getDatabaseConnection(), disc) {
+//		json.NewEncoder(w).Encode("Disc with ID " + string(disc.DiscId) + " was successfully completed.")
+//	}
+//}
+//
 // DELETE /discs
-func deleteDisc(w http.ResponseWriter, r *http.Request) {
-	setupResponse(&w, r)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: DELETE /discs")
-
-	discId, ok := r.URL.Query()["discId"]
-	if !ok || len(discId[0]) < 1 {
-		panic("Url request parameter 'discId' is required for disc deletion.")
-	}
-	if deleteCompletedDisc(getDatabaseConnection(), discId[0]) {
-		json.NewEncoder(w).Encode("Disc with ID " + discId[0] + " was successfully deleted.")
-	}
-}
-
-
-// GET /activeDiscs
-func activeDiscsHandler(w http.ResponseWriter, r *http.Request) {
-	setupResponse(&w, r)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /activeDiscs")
-
-	var discs = getAllActiveDiscs(getDatabaseConnection())
-
-	json.NewEncoder(w).Encode(discs)
-}
-
-// GET /completedDiscs
-func completedDiscsHandler(w http.ResponseWriter, r *http.Request) {
-	setupResponse(&w, r)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	fmt.Println("("+time.Now().String()+") Endpoint Hit: GET /completedDiscs")
-
-	discs := getAllCompletedDiscs(getDatabaseConnection())
-
-	json.NewEncoder(w).Encode(discs)
-}
-
+//func deleteDisc(w http.ResponseWriter, r *http.Request) {
+//	setupResponse(&w, r)
+//	if (*r).Method == "OPTIONS" {
+//		return
+//	}
+//	fmt.Println("("+time.Now().String()+") Endpoint Hit: DELETE /discs")
+//
+//	discId, ok := r.URL.Query()["discId"]
+//	if !ok || len(discId[0]) < 1 {
+//		panic("Url request parameter 'discId' is required for disc deletion.")
+//	}
+//	if deleteCompletedDisc(getDatabaseConnection(), discId[0]) {
+//		json.NewEncoder(w).Encode("Disc with ID " + discId[0] + " was successfully deleted.")
+//	}
+//}
 
 // Database Utilities
 func addNewDisc(db *sql.DB, description string) bool  {
-	discSql := "INSERT INTO disc_catalog.disc(discId, description, timestamp, iscompleted) VALUES(default, $1, $2, false);"
+	discSql := `INSERT INTO disc_catalog.disc(
+                              discId, 
+                              brand, 
+                              name, 
+                              plastic, 
+                              stability, 
+                              speed, 
+                              glide, 
+                              turn, 
+                              fade, 
+                              isinbag, 
+                              iscollected, 
+                              isowned, 
+                              description, 
+                              notes, 
+                              link) 
+    			VALUES(default, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15);`
 
 	var now = time.Now()
 	var discDate = fmt.Sprintf("%v %v %v", now.Month().String(), now.Day(), now.Year())
@@ -165,61 +153,41 @@ func addNewDisc(db *sql.DB, description string) bool  {
 	return true
 }
 
-func completeDisc(db *sql.DB, discId int) bool {
-	results, err := db.Query("UPDATE disc_catalog.disc SET iscompleted=true WHERE discId=$1", discId)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer results.Close()
-	defer db.Close()
-	return true
-}
-
-func updateDisc(db *sql.DB, disc Disc) bool {
-	results, err := db.Query("UPDATE disc_catalog.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
-		disc.Description, disc.Timestamp, disc.IsCompleted, disc.DiscId)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer results.Close()
-	defer db.Close()
-	return true
-}
-
-func deleteCompletedDisc(db *sql.DB, discId string) bool {
-	results, err := db.Query("DELETE FROM disc_catalog.disc WHERE discId=$1", discId)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer results.Close()
-	defer db.Close()
-	return true
-}
+//func markDiscCollected(db *sql.DB, discId int) bool {
+//	results, err := db.Query("UPDATE disc_catalog.disc SET iscollected=true WHERE discId=$1", discId)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	defer results.Close()
+//	defer db.Close()
+//	return true
+//}
+//
+//func updateDisc(db *sql.DB, disc Disc) bool {
+//	results, err := db.Query("UPDATE disc_catalog.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
+//		disc.Description, disc.Timestamp, disc.IsCompleted, disc.DiscId)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	defer results.Close()
+//	defer db.Close()
+//	return true
+//}
+//
+//func deleteCompletedDisc(db *sql.DB, discId string) bool {
+//	results, err := db.Query("DELETE FROM disc_catalog.disc WHERE discId=$1", discId)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	defer results.Close()
+//	defer db.Close()
+//	return true
+//}
 
 func getAllDiscs(db *sql.DB) Discs {
-	return getFilteredDiscs(db, true, true)
-}
-
-func getAllActiveDiscs(db *sql.DB) Discs {
-	return getFilteredDiscs(db, true, false)
-}
-
-func getAllCompletedDiscs(db *sql.DB) Discs {
-	return getFilteredDiscs(db, false, true)
-}
-
-func getFilteredDiscs(db *sql.DB, includeActive bool, includeCompleted bool) Discs {
 	var query string
 
-	if includeActive && includeCompleted {
-		query = "SELECT * FROM disc_catalog.disc"
-	} else if includeActive {
-		query = "SELECT * FROM disc_catalog.disc WHERE iscompleted = false"
-	} else if includeCompleted {
-		query = "SELECT * FROM disc_catalog.disc WHERE iscompleted = true"
-	} else {
-		panic("includeActive & includeActive cannot both be false")
-	}
+	query = "SELECT * FROM disc_catalog.disc"
 
 	results, err := db.Query(query)
 	if err != nil {
@@ -282,12 +250,10 @@ func handleRequests() {
 	Router := mux.NewRouter().StrictSlash(true)
 	Router.HandleFunc("/", indexHandler)
 	Router.HandleFunc("/status", statusHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/discs", getDiscsHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/discs", postActiveDisc).Methods("POST", "OPTIONS")
-	Router.HandleFunc("/discs", updateActiveDisc).Methods("PUT", "OPTIONS")
-	Router.HandleFunc("/discs", deleteDisc).Methods("DELETE", "OPTIONS")
-	Router.HandleFunc("/activeDiscs", activeDiscsHandler).Methods("GET", "OPTIONS")
-	Router.HandleFunc("/completedDiscs", completedDiscsHandler).Methods("GET")
+	Router.HandleFunc("/discs", getAllDiscsHandler).Methods("GET", "OPTIONS")
+	//Router.HandleFunc("/discs", postActiveDisc).Methods("POST", "OPTIONS")
+	//Router.HandleFunc("/discs", updateActiveDisc).Methods("PUT", "OPTIONS")
+	//Router.HandleFunc("/discs", deleteDisc).Methods("DELETE", "OPTIONS")
 
 	port := os.Getenv("PORT")
 	if port == "" {
