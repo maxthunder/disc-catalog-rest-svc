@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	_ "github.com/lib/pq"
-	//_ "github.com/go-sql-driver/mysql" using ^postgres at the moment
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -232,7 +231,6 @@ func getAllDiscs(db *sql.DB) Discs {
 func getDatabaseConnection() *sql.DB {
 	//db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	db, err := sql.Open("postgres", "postgres://prlgrktludlpfy:1723a94575704248af1d99b8683452ee3de33b48d88b18856c4109662b41b995@ec2-34-206-252-187.compute-1.amazonaws.com:5432/d3tvcfn8ldd2av")
-	//db, err := sql.Open("mysql", "todoDatasource_user:todoDatasource_user123@tcp(127.0.0.1:3306)/todoDatasource")
 	if err != nil {
 		panic(err.Error())
 	}
