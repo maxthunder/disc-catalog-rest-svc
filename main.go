@@ -64,7 +64,7 @@ func getAllDiscsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(discs)
 }
 
-// POST /discs
+//POST /discs
 //func postActiveDisc(w http.ResponseWriter, r *http.Request) {
 //	setupResponse(&w, r)
 //	if (*r).Method == "OPTIONS" {
@@ -85,7 +85,7 @@ func getAllDiscsHandler(w http.ResponseWriter, r *http.Request) {
 //	}
 //}
 //
-// PUT /discs
+//PUT /discs
 //func updateActiveDisc(w http.ResponseWriter, r *http.Request) {
 //	setupResponse(&w, r)
 //	if (*r).Method == "OPTIONS" {
@@ -104,7 +104,7 @@ func getAllDiscsHandler(w http.ResponseWriter, r *http.Request) {
 //	}
 //}
 //
-// DELETE /discs
+//DELETE /discs
 //func deleteDisc(w http.ResponseWriter, r *http.Request) {
 //	setupResponse(&w, r)
 //	if (*r).Method == "OPTIONS" {
@@ -152,37 +152,6 @@ func addNewDisc(db *sql.DB, description string) bool  {
 	return true
 }
 
-//func markDiscCollected(db *sql.DB, discId int) bool {
-//	results, err := db.Query("UPDATE disc_catalog.disc SET iscollected=true WHERE discId=$1", discId)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	defer results.Close()
-//	defer db.Close()
-//	return true
-//}
-//
-//func updateDisc(db *sql.DB, disc Disc) bool {
-//	results, err := db.Query("UPDATE disc_catalog.disc SET description=$1, timestamp=$2, iscompleted=$3 WHERE discId=$4",
-//		disc.Description, disc.Timestamp, disc.IsCompleted, disc.DiscId)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	defer results.Close()
-//	defer db.Close()
-//	return true
-//}
-//
-//func deleteCompletedDisc(db *sql.DB, discId string) bool {
-//	results, err := db.Query("DELETE FROM disc_catalog.disc WHERE discId=$1", discId)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	defer results.Close()
-//	defer db.Close()
-//	return true
-//}
-
 func getAllDiscs(db *sql.DB) Discs {
 	var query string
 
@@ -218,12 +187,7 @@ func getAllDiscs(db *sql.DB) Discs {
 			panic(err.Error())
 		}
 
-		//// append on active discs for active disc searches OR append on completed disc for completed disc searches.
-		//if (includeActive && !disc.IsCompleted) || (includeCompleted && disc.IsCompleted) {
-		//	discs = append(discs, disc)
-		//}
-		//
-		//fmt.Println("(" + disc.Timestamp + ") : " + disc.Description)
+		discs = append(discs, disc)
 	}
 	fmt.Printf("Number of discs returned: %v\n", len(discs))
 	defer db.Close()
@@ -257,7 +221,8 @@ func handleRequests() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		//log.Fatal("$PORT must be set")
+		port ="3000"
 	}
 
 	log.Fatal(http.ListenAndServe(":" + port, Router))
