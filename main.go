@@ -155,7 +155,7 @@ func addNewDisc(db *sql.DB, description string) bool  {
 func getAllDiscs(db *sql.DB) Discs {
 	var query string
 
-	query = "SELECT * FROM disc_catalog.disc"
+	query = "SELECT * FROM disc_catalog.disc INNER JOIN disc_catalog.flight_ref ON disc.flightrefid = flight_ref.flightrefi"
 
 	results, err := db.Query(query)
 	if err != nil {
