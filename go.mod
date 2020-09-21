@@ -1,4 +1,4 @@
-module todo-maxthunder-rest-svc
+module disc-catalog-rest-svc
 
 go 1.13
 
