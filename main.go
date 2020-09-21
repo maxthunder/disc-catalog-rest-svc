@@ -155,7 +155,7 @@ func addNewDisc(db *sql.DB, description string) bool  {
 func getAllDiscs(db *sql.DB) Discs {
 	var query string
 
-	query = "SELECT * FROM disc_catalog.disc ORDER BY speed DESC, turn ASC, fade ASC"
+	query = "SELECT * FROM disc_catalog.disc ORDER BY speed DESC, turn, fade"
 
 	results, err := db.Query(query)
 	if err != nil {
