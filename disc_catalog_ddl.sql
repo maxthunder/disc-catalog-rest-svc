@@ -5,11 +5,7 @@ DROP TABLE IF EXISTS contacts;
 
 create table disc_catalog.flight_ref(
     flightRefId SERIAL PRIMARY KEY,
-    stability VARCHAR(25) NOT NULL,
-    speed numeric(4,2) NOT NULL,
-    glide numeric(4,2) NOT NULL,
-    turn numeric(4,2) NOT NULL,
-    fade numeric(4,2) NOT NULL
+
 );
 
 create table disc_catalog.disc(
@@ -17,10 +13,11 @@ create table disc_catalog.disc(
     brand VARCHAR(25) NOT NULL,
     name VARCHAR(50) NOT NULL,
     plastic VARCHAR(25),
-    flightRefId INT NOT NULL,
-    CONSTRAINT fk_flight_ref
-        FOREIGN KEY(flightRefId)
-            REFERENCES disc_catalog.flight_ref(flightRefId),
+    stability VARCHAR(25) NOT NULL,
+    speed numeric(4,2) NOT NULL,
+    glide numeric(4,2) NOT NULL,
+    turn numeric(4,2) NOT NULL,
+    fade numeric(4,2) NOT NULL,
     isInBag BOOLEAN DEFAULT FALSE NOT NULL,
     isCollected BOOLEAN DEFAULT FALSE NOT NULL,
     isOwned BOOLEAN DEFAULT FALSE NOT NULL,

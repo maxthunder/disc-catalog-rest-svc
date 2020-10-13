@@ -1,10 +1,9 @@
 
 -- Envy
 INSERT INTO disc_catalog.flight_ref(stability, speed, glide, turn, fade) VALUES ('OS', 2.7, 3.1, -0.1, 1.9);
-INSERT INTO disc_catalog.disc(name,brand,plastic,flightRefId,isInBag,isCollected,isOwned,description,link)
+INSERT INTO disc_catalog.disc(name,brand,plastic,stability, speed, glide, turn, fade,isInBag,isCollected,isOwned,description,link)
     VALUES (
-            'Axiom', 'Envy', 'Electron',
-            (SELECT flightRefId FROM disc_catalog.flight_ref WHERE speed = 2.7 AND glide = 3.1),
+            'Axiom', 'Envy', 'Electron', 'OS', 2.7, 3.1, -0.1, 1.9,
             true, true, true,
             'The Axiom Envy is the first putt & approach disc in the new Axiom line. Compared with the MVP Ion and Anode, this disc is beefier and has a thicker wing. The Envy is a slower, more overstable, putter that is stable at high speeds with a dependable drop. It is described as a uniquely “lid-like” putter. This new disc will still feature MVP’s overmold GYRO technology.',
             'https://infinitediscs.com/Axiom-Envy'
