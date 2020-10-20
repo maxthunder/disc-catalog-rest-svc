@@ -12,3 +12,20 @@ INSERT INTO disc_catalog.brand_ref(name, location, description) VALUES
 ('Prodigy', null, 'Prodigy Disc provides high quality golf discs, supported by some of the worlds top disc golf professionals. They offer a full lineup of golf discs in varying stability and multiple plastic bends. Prodigy discs are well known for their grippy plastic feel and easy release technology. In 2019 they released their Ace Line discs which include additional molds manufactured overseas and available at a lower price.'),
 ('Streamline', null, 'Streamline Discs is the third brand in the MVP family. Unlike MVP and Axiom, which focus on double mold gyro technology, Streamline uses single mold technology to provide quality, premium plastic at the most affordable cost on the market. Streamline discs use the familiar plastic names Neutron and Proton that are familiar with the overmold discs.'),
 ('Westside', null, 'Westside provides a full lineup of premium golf discs, including some very high quality fast flying drivers. The King, World, Destiny, and Catapult all have speed ratings of14. Westside Discs originated by Finland but is now owned by Latitude 64 and Dynamic Discs.')
+
+INSERT INTO disc_catalog.stability_ref(stability, shortname) VALUES
+('Understable', 'US'),
+('Stable', 'SS'),
+('Overstable', 'OS'),
+('Very Overstable', 'OS+')
+
+INSERT INTO disc_catalog.plastic_ref(name, description) VALUES
+('Neutron', 'Most popular. Flagship blend offering a premium look and feel. Widest selection of bright opaque colors. Shares great durability characteristics of Proton. Easy-to-find colors in any given terrain.'),
+('Cosmic Neutron', 'Premium color enhanced Neutron blend. Plethora of bright color swirls. Shares durability with Neutron and Proton. Unique color blends are great for custom stamping'),
+('Proton', 'High durability for a long consistent life. Designed to withstand the roughest conditions. Transparent candy colors. Also available in soft flexibility for putters'),
+('Plasma', 'Metallic sheen on core plastic. Semi-gummy, grippy flex polymer. Highly durable premium blend. “Color-shift” tones in select color options'),
+('Eclipse', 'High durability for a long consistent life. Designed to withstand the roughest conditions. Transparent candy colors. Also available in soft flexibility for putters.'),
+('Electron', 'Tactile boutique blends for superb grip. Designed to wear slowly with use. Added glide and neutral flight with wear. Also available in soft flexibility for putters.'),
+('Cosmic Electron', 'Cosmic Ray patterns with multi-tone colors. Tactile boutique blends for superb grip. Added glide and neutral flight with wear. Available in Soft, Medium, and Firm flexibility for putters.'),
+('Star', 'Our Star line is created with a special blend of grippy, resilient polymers. Star plastic offers the same outstanding durability of our regular Champion plastic, plus improved grip like our Pro plastic. Star discs have the same flight characteristics as Champion discs, but are slightly less firm. High performance, longevity, and superior grip make Innova Star line discs a great choice for your game. Many Star line discs are available for custom hot stamping.'),
+('Echo Star', 'In an effort to minimize waste, we created a product with great characteristics that is also environmentally friendly. Echo Star plastic has shown that reprocessed plastic can be blended into high performance discs that players want. Made up of a blend of high-tech recycled plastic with a minimum of 50% pre-consumer waste plastic, each Echo Star disc has nearly the same durability as our premium plastics with a superior grip. Provides predictable performance. Long-lasting durability even on wooded or rugged courses. Good all-weather grip, Ideal for those who like the durability of Champion plastic with the superior grip of Pro plastic, Retains flight characteristics longer than DX or Pro Plastics. Best plastic for use with the INNColor process. Most models available for Custom Hot-Stamping')

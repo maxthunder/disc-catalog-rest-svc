@@ -4,6 +4,8 @@ create table disc_catalog.plastic_ref(
                                          description VARCHAR(1000) DEFAULT '' NOT NULL
 );
 
+create unique index plastic_ref_name_uindex on disc_catalog.plastic_ref (name);
+
 create table disc_catalog.stability_ref(
                                            stabilityRefId SERIAL PRIMARY KEY,
                                            stability VARCHAR(25) NOT NULL,
@@ -11,13 +13,17 @@ create table disc_catalog.stability_ref(
                                            description VARCHAR(1000) DEFAULT '' NOT NULL
 );
 
+create unique index stability_ref_stability_uindex on disc_catalog.stability_ref (stability);
+create unique index stability_ref_shortName_uindex on disc_catalog.stability_ref (shortName);
+
 create table disc_catalog.brand_ref(
                                        brandRefId SERIAL PRIMARY KEY,
                                        name VARCHAR(50) NOT NULL,
-                                       parentBrand VARCHAR(50),
                                        location VARCHAR(50) NOT NULL,
                                        description VARCHAR(1000) DEFAULT '' NOT NULL
 );
+
+create unique index brand_ref_name_uindex on disc_catalog.brand_ref (name);
 
 create table disc_catalog.disc(
                                   discId SERIAL PRIMARY KEY,
