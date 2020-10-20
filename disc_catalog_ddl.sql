@@ -1,29 +1,48 @@
-create schema disc_catalog collate utf8_general_ci;
+create table disc_catalog.plastic_ref(
+                                         plasticRefId SERIAL PRIMARY KEY,
+                                         name VARCHAR(50) NOT NULL,
+                                         description VARCHAR(1000) DEFAULT '' NOT NULL
+);
 
-DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS contacts;
+create table disc_catalog.stability_ref(
+                                           stabilityRefId SERIAL PRIMARY KEY,
+                                           stability VARCHAR(25) NOT NULL,
+                                           shortName VARCHAR(10) NOT NULL,
+                                           description VARCHAR(1000) DEFAULT '' NOT NULL
+);
 
-create table disc_catalog.flight_ref(
-    flightRefId SERIAL PRIMARY KEY,
-
+create table disc_catalog.brand_ref(
+                                       brandRefId SERIAL PRIMARY KEY,
+                                       name VARCHAR(50) NOT NULL,
+                                       parentBrand VARCHAR(50),
+                                       location VARCHAR(50) NOT NULL,
+                                       description VARCHAR(1000) DEFAULT '' NOT NULL
 );
 
 create table disc_catalog.disc(
-    discId SERIAL PRIMARY KEY,
-    brand VARCHAR(25) NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    plastic VARCHAR(25),
-    stability VARCHAR(25) NOT NULL,
-    speed numeric(4,2) NOT NULL,
-    glide numeric(4,2) NOT NULL,
-    turn numeric(4,2) NOT NULL,
-    fade numeric(4,2) NOT NULL,
-    isInBag BOOLEAN DEFAULT FALSE NOT NULL,
-    isCollected BOOLEAN DEFAULT FALSE NOT NULL,
-    isOwned BOOLEAN DEFAULT FALSE NOT NULL,
-    description VARCHAR(1000) DEFAULT '' NOT NULL,
-    notes VARCHAR(1000) DEFAULT '' NOT NULL,
-    link VARCHAR(1000) DEFAULT '' NOT NULL
+                                  discId SERIAL PRIMARY KEY,
+                                  brandRefId INT NOT NULL,
+                                  CONSTRAINT fk_brandRefId
+                                      FOREIGN KEY(brandRefId)
+                                          REFERENCES disc_catalog.brand_ref(brandRefId),
+                                  name VARCHAR(50) NOT NULL,
+                                  plasticRefId INT NOT NULL,
+                                  CONSTRAINT fk_plasticRefId
+                                      FOREIGN KEY(plasticRefId)
+                                          REFERENCES disc_catalog.plastic_ref(plasticRefId),
+                                  stabilityRefId INT NOT NULL,
+                                  CONSTRAINT fk_stabilityRefId
+                                      FOREIGN KEY(stabilityRefId)
+                                          REFERENCES disc_catalog.stability_ref(stabilityRefId),
+                                  speed numeric(4,2) NOT NULL,
+                                  glide numeric(4,2) NOT NULL,
+                                  turn numeric(4,2) NOT NULL,
+                                  fade numeric(4,2) NOT NULL,
+                                  isBeaded BOOLEAN DEFAULT FALSE NOT NULL,
+                                  isInBag BOOLEAN DEFAULT FALSE NOT NULL,
+                                  isCollected BOOLEAN DEFAULT FALSE NOT NULL,
+                                  isOwned BOOLEAN DEFAULT FALSE NOT NULL,
+                                  description VARCHAR(1000) DEFAULT '' NOT NULL,
+                                  notes VARCHAR(1000) DEFAULT '' NOT NULL,
+                                  link VARCHAR(1000) DEFAULT '' NOT NULL
 );
-
-
