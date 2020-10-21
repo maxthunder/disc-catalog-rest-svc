@@ -17,7 +17,7 @@ type Disc struct {
 	BrandName string `json:"brandname"`
 	DiscName string `json:"discname"`
 	PlasticName string `json:"plasticname"`
-	Stability string `json:"stability"`
+	Stability string `json:"shortname"`
 	Speed string `json:"speed"`
 	Glide string `json:"glide"`
 	Turn string `json:"turn"`
@@ -99,7 +99,7 @@ func getAllDiscs(db *sql.DB) Discs {
 	var query string
 
 	query = `
-		SELECT discid, brandname, discname, plasticname, stability, speed, glide, turn, fade, isbeaded, iscollected, isowned, disc.description, notes, link
+		SELECT discid, brandname, discname, plasticname, shortname, speed, glide, turn, fade, isbeaded, iscollected, isowned, disc.description, notes, link
 		FROM disc_catalog.disc 
 		INNER JOIN disc_catalog.brand_ref br on disc.brandrefid = br.brandrefid
 		INNER JOIN disc_catalog.plastic_ref pr on disc.plasticrefid = pr.plasticrefid
