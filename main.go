@@ -17,7 +17,7 @@ type Disc struct {
 	BrandName string `json:"brandname"`
 	DiscName string `json:"discname"`
 	PlasticName string `json:"plasticname"`
-	Stability string `json:"shortname"`
+	Stability string `json:"stability"`
 	Speed string `json:"speed"`
 	Glide string `json:"glide"`
 	Turn string `json:"turn"`
