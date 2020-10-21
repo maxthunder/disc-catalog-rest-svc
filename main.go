@@ -13,16 +13,16 @@ import (
 )
 
 type Disc struct {
-	DiscId int `json:"discId"`
-	Brand string `json:"brand"`
-	Name string `json:"name"`
-	Plastic string `json:"plastic"`
+	DiscId int `json:"discid"`
+	BrandName string `json:"brandname"`
+	DiscName string `json:"discname"`
+	PlasticName string `json:"plasticname"`
 	Stability string `json:"stability"`
 	Speed string `json:"speed"`
 	Glide string `json:"glide"`
 	Turn string `json:"turn"`
 	Fade string `json:"fade"`
-	IsInBag bool `json:"isinbag"`
+	IsBeaded bool `json:"isbeaded"`
 	IsCollected bool `json:"iscollected"`
 	IsOwned bool `json:"isowned"`
 	Description string `json:"description"`
@@ -64,68 +64,11 @@ func getAllDiscsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(discs)
 }
 
-//POST /discs
-//func postActiveDisc(w http.ResponseWriter, r *http.Request) {
-//	setupResponse(&w, r)
-//	if (*r).Method == "OPTIONS" {
-//		return
-//	}
-//	fmt.Println("("+time.Now().String()+") Endpoint Hit: POST /discs")
-//
-//
-//	//discs := addNewDisc(getDatabaseConnection())
-//	decoder := json.NewDecoder(r.Body)
-//	var disc Disc
-//	err := decoder.Decode(&disc)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	if addNewDisc(getDatabaseConnection(), disc.Description) {
-//		json.NewEncoder(w).Encode("Disc with description " + disc.Description + " was successfully added.")
-//	}
-//}
-//
-//PUT /discs
-//func updateActiveDisc(w http.ResponseWriter, r *http.Request) {
-//	setupResponse(&w, r)
-//	if (*r).Method == "OPTIONS" {
-//		return
-//	}
-//	fmt.Println("("+time.Now().String()+") Endpoint Hit: PUT /discs")
-//
-//	decoder := json.NewDecoder(r.Body)
-//	var disc Disc
-//	err := decoder.Decode(&disc)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	if updateDisc(getDatabaseConnection(), disc) {
-//		json.NewEncoder(w).Encode("Disc with ID " + string(disc.DiscId) + " was successfully completed.")
-//	}
-//}
-//
-//DELETE /discs
-//func deleteDisc(w http.ResponseWriter, r *http.Request) {
-//	setupResponse(&w, r)
-//	if (*r).Method == "OPTIONS" {
-//		return
-//	}
-//	fmt.Println("("+time.Now().String()+") Endpoint Hit: DELETE /discs")
-//
-//	discId, ok := r.URL.Query()["discId"]
-//	if !ok || len(discId[0]) < 1 {
-//		panic("Url request parameter 'discId' is required for disc deletion.")
-//	}
-//	if deleteCompletedDisc(getDatabaseConnection(), discId[0]) {
-//		json.NewEncoder(w).Encode("Disc with ID " + discId[0] + " was successfully deleted.")
-//	}
-//}
-
 // Database Utilities
 func addNewDisc(db *sql.DB, description string) bool  {
 	discSql := `INSERT INTO disc_catalog.disc(
                               discId, 
-                              brand, 
+                              brandRefID, 
                               name, 
                               plastic, 
                               stability, 
@@ -155,8 +98,13 @@ func addNewDisc(db *sql.DB, description string) bool  {
 func getAllDiscs(db *sql.DB) Discs {
 	var query string
 
-	query = "SELECT * FROM disc_catalog.disc"
-
+	query = `
+		SELECT discid, brandname, discname, plasticname, stability, speed, glide, turn, fade, isbeaded, iscollected, isowned, disc.description, notes, link
+		FROM disc_catalog.disc 
+		INNER JOIN disc_catalog.brand_ref br on disc.brandrefid = br.brandrefid
+		INNER JOIN disc_catalog.plastic_ref pr on disc.plasticrefid = pr.plasticrefid
+		INNER JOIN disc_catalog.stability_ref sr on disc.stabilityrefid = sr.stabilityrefid;
+		`
 	results, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
@@ -168,15 +116,15 @@ func getAllDiscs(db *sql.DB) Discs {
 		var disc Disc
 		err = results.Scan(
 			&disc.DiscId,
-			&disc.Brand,
-			&disc.Name,
-			&disc.Plastic,
+			&disc.BrandName,
+			&disc.DiscName,
+			&disc.PlasticName,
 			&disc.Stability,
 			&disc.Speed,
 			&disc.Glide,
 			&disc.Turn,
 			&disc.Fade,
-			&disc.IsInBag,
+			&disc.IsBeaded,
 			&disc.IsCollected,
 			&disc.IsOwned,
 			&disc.Description,
@@ -215,9 +163,6 @@ func handleRequests() {
 	Router.HandleFunc("/", indexHandler)
 	Router.HandleFunc("/status", statusHandler).Methods("GET", "OPTIONS")
 	Router.HandleFunc("/discs", getAllDiscsHandler).Methods("GET", "OPTIONS")
-	//Router.HandleFunc("/discs", postActiveDisc).Methods("POST", "OPTIONS")
-	//Router.HandleFunc("/discs", updateActiveDisc).Methods("PUT", "OPTIONS")
-	//Router.HandleFunc("/discs", deleteDisc).Methods("DELETE", "OPTIONS")
 
 	port := os.Getenv("PORT")
 	if port == "" {

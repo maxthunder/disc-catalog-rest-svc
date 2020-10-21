@@ -1,4 +1,4 @@
-INSERT INTO disc_catalog.brand_ref(name, location, description) VALUES
+INSERT INTO disc_catalog.brand_ref(brandname, location, description) VALUES
 ('Axiom', 'Marlette, Michigan', 'Axiom is a disc golf brand manufactured by MVP. Axiom utilizes gyro technology and multiple color options to create discs that fly well and look great.'),
 ('DGA', 'California', 'Disc Golf Association (DGA) offers a full product line of quality disc golf discs. They use Discraft for manufacturing and feature great plastic blends and a variety of discs for all purposes. The Blowfly and Gumputt putters are made of the most unique and flexible material, while the drivers, and mids are usually presented in premium, durable plastics. Note: DGA uses weight stickers that feature a weight range (for example 170-172). When we list the discs on our website, we list the lower weight in the range for consistency, but the actual weight of the disc could fall anywhere in the range on the sticker.'),
 ('Discmania', 'Colorado','Discmania offers some of the best disc golf discs on the market. They have headquarters in Colorado, but work closely with Innova, Latitude 64 and Yikun to produce and manufacture their discs with their own unique designs. Discmania Originals are produced by Innova Champion Discs in California. The Discmania Evolution Line is produced by Latitude 64 in Sweden. The Discmania Active Line is produced by Yikun Discs in China.'),
@@ -19,7 +19,7 @@ INSERT INTO disc_catalog.stability_ref(stability, shortname) VALUES
 ('Overstable', 'OS'),
 ('Very Overstable', 'OS+');
 
-INSERT INTO disc_catalog.plastic_ref(name, description) VALUES
+INSERT INTO disc_catalog.plastic_ref(plasticname, description) VALUES
 ('Neutron', 'Most popular. Flagship blend offering a premium look and feel. Widest selection of bright opaque colors. Shares great durability characteristics of Proton. Easy-to-find colors in any given terrain.'),
 ('Cosmic Neutron', 'Premium color enhanced Neutron blend. Plethora of bright color swirls. Shares durability with Neutron and Proton. Unique color blends are great for custom stamping'),
 ('Proton', 'High durability for a long consistent life. Designed to withstand the roughest conditions. Transparent candy colors. Also available in soft flexibility for putters'),
@@ -30,7 +30,7 @@ INSERT INTO disc_catalog.plastic_ref(name, description) VALUES
 ('Star', 'Our Star line is created with a special blend of grippy, resilient polymers. Star plastic offers the same outstanding durability of our regular Champion plastic, plus improved grip like our Pro plastic. Star discs have the same flight characteristics as Champion discs, but are slightly less firm. High performance, longevity, and superior grip make Innova Star line discs a great choice for your game. Many Star line discs are available for custom hot stamping.'),
 ('Echo Star', 'In an effort to minimize waste, we created a product with great characteristics that is also environmentally friendly. Echo Star plastic has shown that reprocessed plastic can be blended into high performance discs that players want. Made up of a blend of high-tech recycled plastic with a minimum of 50% pre-consumer waste plastic, each Echo Star disc has nearly the same durability as our premium plastics with a superior grip. Provides predictable performance. Long-lasting durability even on wooded or rugged courses. Good all-weather grip, Ideal for those who like the durability of Champion plastic with the superior grip of Pro plastic, Retains flight characteristics longer than DX or Pro Plastics. Best plastic for use with the INNColor process. Most models available for Custom Hot-Stamping');
 
-INSERT INTO disc_catalog.disc(brandrefid, name, plasticrefid, stabilityrefid, speed, glide, turn, fade, isbeaded, iscollected, isowned, description, link) VALUES
+INSERT INTO disc_catalog.disc(brandrefid, discname, plasticrefid, stabilityrefid, speed, glide, turn, fade, isbeaded, iscollected, isowned, description, link) VALUES
 (
     (SELECT brandrefid FROM disc_catalog.brand_ref WHERE brand_ref.name = 'Axiom'),
     'Envy',
