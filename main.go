@@ -38,7 +38,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Fprint(w, "Homepage Endpoint Hit")
+	fmt.Fprint(w, "Homepage Endpoint Hit.")
 }
 
 // GET /status
